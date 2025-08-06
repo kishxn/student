@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from typing import Optional
+
 app = FastAPI()
 
 class Student:
@@ -37,13 +38,17 @@ class Student:
 def read_root():
     return {"message": "Welcome to Result Predictor API"}
 
+import pandas as pd
 @app.get("/predict")
 def predict(name: str, mark: int):
     s = Student(name, mark)
-    return {
+
+        # 🔹 Create one-row DataFrame
+    df = pd.DataFrame([{
         "name": name,
         "mark": mark,
-        "result": s.get_result(),
-        "grade": Student.grade_from_mark(mark),
-        "school": Student.get_school_name()
-    }
+        "result": s
+    }])
+
+    # 🔹 Return as HTML table
+    return df.to_html(index=False)
